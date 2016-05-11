@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>操作系统 磁盘 Spooling by shengyang998</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">操作系统 磁盘 Spooling</h1>
+      <h2 class="project-tagline">操作系统作业</h2>
+      <a href="https://github.com/shengyang998/OperatingSystemHW" class="btn">View on GitHub</a>
+      <a href="https://github.com/shengyang998/OperatingSystemHW/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/shengyang998/OperatingSystemHW/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="操作系统-io-spooling" class="anchor" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-io-spooling" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>操作系统 I/O Spooling</h1>
+
+<p><code>操作系统</code> <code>I/O</code> <code>假脱机技术</code> <code>虚拟设备技术</code> <code>spooling</code></p>
+
+<hr>
+
+<h2>
+<a id="用户控件的io软件" class="anchor" href="#%E7%94%A8%E6%88%B7%E6%8E%A7%E4%BB%B6%E7%9A%84io%E8%BD%AF%E4%BB%B6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>用户控件的I/O软件</h2>
+
+<blockquote>
+<p>虽然绝大部分I/O软件都是在操作系统内部的，然而一小部分的软件包括库函数和用户程序的连接，甚至可以是一个运行在操作系统之外的单独的程序</p>
+</blockquote>
+
+<h3>
+<a id="1-库函数" class="anchor" href="#1-%E5%BA%93%E5%87%BD%E6%95%B0" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. 库函数</h3>
+
+<ul>
+<li>实质是空壳，最终将会调用系统函数进行输入输出</li>
+</ul>
+
+<h3>
+<a id="2-spoolingsimultaneous-peripheral-operation-on-line" class="anchor" href="#2-spoolingsimultaneous-peripheral-operation-on-line" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. spooling（Simultaneous Peripheral Operation On-Line）</h3>
+
+<ul>
+<li>并非所有用户级I/O软件包含库函数程序。另一种是spooling系统，Spooling是一种在多道程序系统中处理独占I/O设备的方式。</li>
+<li>考虑一种典型的spooled设备：一台打印机。一个进程如果打开了它，但是数小时什么都不做，那将没有任何其他进程可以打印任何东西</li>
+<li>然而，如果创建一个特别的后台驻留进程（deamon）和一个特殊的目录（spooling direcory），当打印一份文件的时候，首先一个进程generates整个需要打印的文件，并且将其放入spooling directory中。最终是由deamon进程——唯一的有权限使用打印机的特殊文件的进程——来打印目录中的文件。</li>
+</ul>
+
+<blockquote>
+<p>spooling技术实际上是一种外围设备同时联机操作技术，又称为排队转储技术。它在输入和输出之间增加了“输入井”和“输出井”的排队转储环节，以消除用户的“联机”等待时间。在系统输入模块收到作业输入请求信号后，输入管理模块中的读过程负责将信息从输入装置中读入输入井缓冲区。当缓冲区满时，由写过程将信息从缓冲区写到外存的输入井中，读过程和写过程反复循环，直到一个作业输入完毕。当读过程读到一个硬件结束标志之后，系统再次驱动写过程把最后一批信息写入外存输入井并调用中断处理程序结束该次输入。然后，系统为该作业建立作业控制块，从而使输入井中的作业进入作业等待队列，等待作业调度程序选中后进入内存运行。
+系统在管理输入井过程中可以“不断”读入输入的作业，直到输入结束或输入井满而暂停。
+若系统的某台台行式打印机采用了虚拟设备技术，那么若有进程要求对它打印输出时，spooling系统并不是将这台打印机直接分配给进程，而是在共享设备（磁盘）上的输出，spooling存储区中为其分配一块存储空间。</p>
+
+<p>各进程的数据输出文件形成了一个输出队列，由输出POOLing系统控制这台打印机进程，依次将队列中的输出文件实际打印输出。在spooling系统中，实际上并没有为任何进程分配，而只是在输入井和输出井中，为进程分配一存储区和建立一章I/O请求表。这样，便把独占设备改造为共享设备。
+--via baike.baidu.com</p>
+</blockquote>
+
+<hr>
+
+<hr>
+
+<h1>
+<a id="操作系统-磁盘" class="anchor" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E7%A3%81%E7%9B%98" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>操作系统 磁盘</h1>
+
+<p><code>操作系统</code> <code>磁盘</code> <code>Disk</code></p>
+
+<hr>
+
+<h2>
+<a id="磁盘硬件" class="anchor" href="#%E7%A3%81%E7%9B%98%E7%A1%AC%E4%BB%B6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>磁盘硬件</h2>
+
+<ul>
+<li>Disk有多种类型，通常是磁盘（硬盘和软盘）还有光盘等</li>
+<li>磁盘通常由一个或多个金属盘片组成，这些盘片被固定在一根旋转轴上，由同一个马达来驱动，每个盘片都有上下两个盘面，在盘面上涂有磁性材料，每个盘面对应一个磁头，磁头被固定在磁头臂上，磁头臂被固定在传动装置上，传动装置移动时所有磁头都会跟着移动。</li>
+<li>将磁盘的一个盘片按同心圆分成不同的磁道，每个磁道上有以 512Bytes 为单位的若干扇区。将磁盘按照同心圆分成不同的柱面，每个柱面上有若干的盘面。</li>
+<li>如果要访问磁盘上的某个扇区，首先给出其物理地址（柱面号、盘面号、扇区号），磁盘驱动器</li>
+<li>需要指出的是，磁盘的读写是以扇区为单位的，即使只想读取一个字节，也要将整个扇区读入。</li>
+</ul>
+
+<h2>
+<a id="磁盘的格式化" class="anchor" href="#%E7%A3%81%E7%9B%98%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>磁盘的格式化</h2>
+
+<p>硬盘的格式化分为三个步骤：低级格式化、分区和高级格式化。</p>
+
+<ul>
+<li>低级格式化：
+在磁盘上标出磁道和扇区</li>
+<li>分区：
+把磁盘分成不同的逻辑区，没一个逻辑分区都可以看成一个独立的硬盘</li>
+<li>高级格式化：
+操作完成后，相应的逻辑分区上将会生成一个引导块、空闲存储管理的数据结构、根目录和一个空白的文件系统（FAT16、FAT32、NTFS、EXT）</li>
+<li>扇区：</li>
+<li>- 相位编码：
+以某个特定的位组合模式开始，用来向硬件表明这是一个新扇区的开始。另外它还包括柱面号、扇区号和扇区大小等信息</li>
+<li>- 数据区：
+由低级格式化程序指定，一般为 512 Bytes</li>
+<li>- 纠错码：
+包含一些冗余信息，用来纠正在读取扇区时可能出现的错误</li>
+<li>- 往往会在 0 扇区存放一些系统启动代码和一个分区表</li>
+</ul>
+
+<h2>
+<a id="磁盘的调度算法" class="anchor" href="#%E7%A3%81%E7%9B%98%E7%9A%84%E8%B0%83%E5%BA%A6%E7%AE%97%E6%B3%95" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>磁盘的调度算法</h2>
+
+<p>访问一个扇区的时候，所需的时间主要在三个方面：</p>
+
+<ul>
+<li>柱面定位时间
+磁盘的传动装置带动磁头臂和磁头移动——机械运动</li>
+<li>旋转延迟时间
+档次头移动到正确的柱面后，磁头下方的扇区可能不是目标扇区，则磁头需要等待目标扇区到达——机械运动</li>
+<li>数据传送时间</li>
+</ul>
+
+<h3>
+<a id="先来先服务算法first-come-first-served-fcfs" class="anchor" href="#%E5%85%88%E6%9D%A5%E5%85%88%E6%9C%8D%E5%8A%A1%E7%AE%97%E6%B3%95first-come-first-served-fcfs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>先来先服务算法（First-Come First-Served, FCFS）</h3>
+
+<p>按照请求到达的时间先后顺序来依次执行</p>
+
+<ul>
+<li>优点
+简单、公平</li>
+<li>缺点
+效率不高，两次时间上相邻的请求可能并无任何关系，磁盘上的存储位置也可能相距甚远</li>
+</ul>
+
+<h3>
+<a id="最短搜索时间算法shortest-seek-time-first-sstf" class="anchor" href="#%E6%9C%80%E7%9F%AD%E6%90%9C%E7%B4%A2%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95shortest-seek-time-first-sstf" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>最短搜索时间算法（Shortest Seek Time First, SSTF）</h3>
+
+<blockquote>
+<p>从磁盘的访问请求队列中，选择从当前磁头出发，移动距离最短的那个请求去执行。</p>
+</blockquote>
+
+<p>这个算法的目标是使每一次得磁头移动距离最短，因此是一种局部最优算法。一般来说比FCFS效率高。</p>
+
+<p>但是这个算法有一个大的缺陷，即如果目标扇区在两边的柱面上，则可能长期处于<code>饥饿</code>状态，时钟没有机会去执行</p>
+
+<h3>
+<a id="电梯算法elevator-algorithm-scan" class="anchor" href="#%E7%94%B5%E6%A2%AF%E7%AE%97%E6%B3%95elevator-algorithm-scan" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>电梯算法（Elevator Algorithm, SCAN）</h3>
+
+<blockquote>
+<p>也称为扫描算法，磁头从当前位置开始，线沿着一个方向移动，并且以此执行这条路径上所有访问请求。直到尽头，再调转方向，回过头来继续进行。</p>
+</blockquote>
+
+<p>解决了SSTF算法的一大缺点
+而且应用此算法，磁头的移动距离不会超过出面总数的两倍</p>
+
+<h2>
+<a id="出错处理" class="anchor" href="#%E5%87%BA%E9%94%99%E5%A4%84%E7%90%86" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>出错处理</h2>
+
+<p>磁盘制造的瑕疵不可避免，数据密度一大，就容易出错。
+因为磁盘的访问是以扇区为单位的，只要在一个扇区当中只有一个数据位不能被正常访问，那么整个扇区的数据都不能使用。然而，如果出错的位数不是太多，只有少量的几个，都可以通过扇区的纠错码来校正。如果出错的位数太多，则整个扇区都必须被放弃。</p>
+
+<ul>
+<li>对于坏扇区，有两种处理策略：</li>
+<li>由设备控制器来处理
+磁盘出厂前，厂商将对磁盘进行测试，然后用一个列表来记录所有的坏扇区，并把它写入磁盘，然后对每个坏扇区用一个备用的扇区替代它。</li>
+<li>由操作系统来处理
+操作系统对整个磁盘进行测试，获得一个坏扇区的列表，在此基础上构建一个映射表，对扇区编号进行调整。为了避免这些坏扇区被使用，操作系统可以创建一些特殊的文件<code>占用</code>坏扇区。</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/shengyang998/OperatingSystemHW">操作系统 磁盘 Spooling</a> is maintained by <a href="https://github.com/shengyang998">shengyang998</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
